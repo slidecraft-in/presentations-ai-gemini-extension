@@ -1,0 +1,15 @@
+{
+  "name": "presentations-ai",
+  "version": "0.1.0",
+  "contextFileName": "GEMINI.md",
+  "mcpServers": {
+    "presentations-ai": {
+      "httpUrl": "https://api.presentations.ai/mcp",
+      "authProviderType": "dynamic_discovery",
+      "oauth": {
+        "enabled": true
+      },
+      "timeout": 120000
+    }
+  }
+}
