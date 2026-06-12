@@ -1,6 +1,7 @@
 {
   "name": "presentations-ai",
-  "version": "0.1.0",
+  "version": "0.1.1",
+  "description": "Create designed slide decks from a topic, text, or document with Presentations.AI — directly from Gemini CLI.",
   "contextFileName": "GEMINI.md",
   "mcpServers": {
     "presentations-ai": {
