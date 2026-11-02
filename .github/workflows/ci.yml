@@ -1,0 +1,37 @@
+name: CI
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  check:
+    name: Check extension
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - name: Bundled skills match the skills repo
+        run: |
+          for skill in skills/*/SKILL.md; do
+            name=$(basename "$(dirname "$skill")")
+            curl -fsSL "https://raw.githubusercontent.com/slidecraft-in/presentations-ai-skills/main/$name/SKILL.md" | cmp - "$skill"
+          done
+      - name: Bundled skills follow the Agent Skills spec
+        run: |
+          for skill in skills/*/SKILL.md; do
+            pipx run --spec skills-ref==0.1.1 agentskills validate "./$(dirname "$skill")"
+          done
+      - name: The server URL matches the registry listing
+        run: |
+          expected=$(curl -fsSL https://raw.githubusercontent.com/slidecraft-in/presentations-ai-mcp-server/main/server.json | jq -r '.remotes[0].url')
+          actual=$(jq -r '.mcpServers["presentations-ai"] | .httpUrl // .url' gemini-extension.json)
+          if [ "$actual" != "$expected" ]; then
+            echo "gemini-extension.json points at $actual, but server.json lists $expected"
+            exit 1
+          fi
